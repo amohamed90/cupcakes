@@ -15,6 +15,10 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
 @app.route("/api/cupcakes")
 def list_all_cupcakes():
     """Return JSON {'cupcakes': [{id, flavor, size, rating, image},...]}"""
@@ -37,16 +41,23 @@ def list_single_cupcake(cupcake_id):
 def create_cupcake():
     """Create cupcake from form data and return it"""
     """Return JSON {'cupcake': {id, flavor, size, rating, image}}"""
+    # flavor = request.json["flavor"]
+    # size = request.json["size"]
+    # rating = request.json["rating"]
+    # image = request.json["image"]
 
-    flavor = request.json["flavor"]
-    size = request.json["size"]
-    rating = request.json["rating"]
-    image = request.json["image"]
+    # new_cupcake = Cupcake(flavor=flavor, size=size, rating=rating, image=image
 
-    new_cupcake = Cupcake(flavor=flavor, size=size, rating=rating, image=image)
+    new_cupcake = Cupcake (
+        flavor = request.json["flavor"]
+        size = request.json["size"]
+        rating = request.json["rating"]
+        image = request.json["image"]
+    )
 
     db.session.add(new_cupcake)
     db.session.commit()
+
 
     serialized = serialize_cupcake(new_cupcake)
 
@@ -59,7 +70,7 @@ def edit_cupake(cupcake_id):
     """Return JSON {'cupcake': {id, flavor, size, rating, image}}"""
 
     cupcake = Cupcake.query.get_or_404(cupcake_id)
-    
+
     data = request.json
 
     cupcake.flavor = data["flavor"]
