@@ -53,3 +53,34 @@ def create_cupcake():
     return (jsonify(cupcake=serialized), 201)
 
 
+@app.route('/api/cupcakes/<cupcake_id>', methods=["PATCH"])
+def edit_cupake(cupcake_id):
+    """Editing cupcake"""
+    """Return JSON {'cupcake': {id, flavor, size, rating, image}}"""
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+    
+    data = request.json
+
+    cupcake.flavor = data["flavor"]
+    cupcake.size = data["size"]
+    cupcake.rating = data["rating"]
+    cupcake.image = data["image"]
+
+    print('**************', cupcake)
+    db.session.commit()
+
+    serialized = serialize_cupcake(cupcake)
+
+    return (jsonify(cupcake=serialized), 200)
+
+
+@app.route("/api/cupcakes/<cupcake_id>", methods=["DELETE"])
+def delete_single_cupcake(cupcake_id):
+    """Return JSON {message: "Deleted"}"""
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+    db.session.delete(cupcake)
+    db.session.commit()
+
+    return jsonify({"message":"Deleted"})
